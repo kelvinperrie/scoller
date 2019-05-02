@@ -119,7 +119,7 @@
                     x = parseFloat(x) - adjacent;
                     $("#everythingFore").css("background-position-x", x.toString()+"px")
 
-                    // keeping in DRY right here yo
+                    // keeping to some DRY right here yo
                     distance = self.currentMovementIncrement / 1.2;
                     // what is the adjacent (X)
                     adjacent = Math.cos(angleInRads) * distance;
@@ -143,12 +143,6 @@
                 
                 var image = "images/booster" + self.animationCounter + ".png"
                 $("#boosters").css('background-image', "url(" + image + ")");
-
-                // if(self.animationCounter == 0) {
-                //     $("#boosters").css('background-color', 'red');
-                // } else if(self.animationCounter == 1) {
-                //     $("#boosters").css('background-color', 'white');
-                // }
                 self.animationCounter = self.animationCounter + 1;
                 if(self.animationCounter > self.animationCounterMax) {
                     self.animationCounter = 0;
