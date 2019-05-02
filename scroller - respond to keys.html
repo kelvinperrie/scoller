@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>howdy folks</title>
+    <script src="scripts/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="scripts/jQueryRotate.js" type="text/javascript"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+        #everything {
+            background-image: url("images/stars.png");
+            width: 100%;
+            height: 100vh;
+            top: 0;
+            left: 0;
+        }
+        #vehicle {
+            position: fixed;
+            top:0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            
+            margin: auto;
+            background-image: url("images/ship-at-zero-blue.png");
+            width: 40px;
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div id="vehicle"></div>
+    <div id="everything">
+
+    </div>
+    <script type="text/javascript">
+
+        var vehicleModel = function() {
+            var self = this;
+
+            self.currentAngle = 0;
+            self.turnIteration = 5;
+            self.movementIncrement = 10;
+            self.turnLeft = false;
+            self.turnRight = false;
+            self.goForward = false;
+            self.moveWaitTime = 50;
+
+            self.moveForward = function() {
+
+                if(self.goForward != true) return;
+
+                var angleInRads = self.currentAngle * (Math.PI / 180);
+                var distance = self.movementIncrement;
+                // what is the adjacent (X)
+                var adjacent = Math.cos(angleInRads) * distance;
+                // what is the opposite (Y)
+                var opposite = Math.sin(angleInRads) * distance;
+
+                var y = $("#everything").css("background-position-y").replace("px","");
+                y = parseFloat(y) - opposite;
+                $("#everything").css("background-position-y", y.toString()+"px")
+                var x = $("#everything").css("background-position-x").replace("px","");
+                x = parseFloat(x) - adjacent;
+                $("#everything").css("background-position-x", x.toString()+"px")
+
+                setTimeout(function () { self.moveForward(); }, self.moveWaitTime);
+            }
+            self.doTurnLeft = function() {
+                if(self.turnLeft != true) return;
+
+                self.currentAngle = self.currentAngle - self.turnIteration;
+                setTimeout(function () { self.doTurnLeft(); }, self.moveWaitTime);
+                $("#vehicle").rotate(self.currentAngle);
+            }
+            self.doTurnRight = function() {
+                if(self.turnRight != true) return;
+
+                self.currentAngle = self.currentAngle + self.turnIteration;
+                setTimeout(function () { self.doTurnRight(); }, self.moveWaitTime);
+                $("#vehicle").rotate(self.currentAngle);
+            }
+
+            self.processKey = function(event) {
+                var input = event.which;
+                if(input === 37) {
+                    // left
+                    var alreadyDoing = self.turnLeft;
+                    self.turnLeft = event.type=="keydown";
+                    if(!alreadyDoing) {
+                        self.doTurnLeft();
+                    }
+                } else if(input === 38) {
+                    // up
+                    var alreadyDoing = self.goForward;
+                    self.goForward = event.type=="keydown";
+                    if(!alreadyDoing) {
+                        self.moveForward();
+                    }
+
+                } else if (input === 39) {
+                    // right
+                    var alreadyDoing = self.turnRight;
+                    self.turnRight = event.type=="keydown";
+                    if(!alreadyDoing) {
+                        self.doTurnRight();
+                    }
+                } else if (input === 40) {
+                    // down
+                }
+            }
+        }
+        var model = new vehicleModel();
+
+        $(function(){
+            $('html').keydown(function(e){
+                model.processKey(e);
+            });
+            $('html').keyup(function(e){
+                model.processKey(e);
+            });
+        });
+
+    </script>
+</body>
+</html>
